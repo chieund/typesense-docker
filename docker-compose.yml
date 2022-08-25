@@ -1,0 +1,32 @@
+version: '3.5'
+services:
+  typesense:
+    build:
+      context: ./docker/typesense/
+    environment:
+      TYPESENSE_DATA_DIR: /data
+      TYPESENSE_API_KEY: test_demo
+    volumes:
+      - /tmp/typesense-server-data:/data
+    networks:
+      - typesense-net
+    ports:
+      - 8108:8108
+    restart: "no"
+
+  golang:
+    build:
+      context: ./docker/golang/
+    volumes:
+      - ./:/app/
+    ports:
+      - "9001:9000"
+    networks:
+      - typesense-net
+    working_dir: "/app"
+    privileged: true
+    tty: true
+
+networks:
+  typesense-net:
+    driver: bridge
